@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# http://localhost:8000/playground/hello/
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'playground', # or you can write ==> playground.apps.PlaygroundConfig
-    'debug_toolbar'  # this is debug toolbar
+    'debug_toolbar',  # this is debug toolbar
+    'store',
+    'tags',
+    'likes',
 ]
 
 MIDDLEWARE = [
