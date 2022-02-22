@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 # http://localhost:8000/playground/hello/
 # https://mockaroo.com/ IMPORTANT for mock DATA
+# queryset ----> field lookups in Django.com
+# functions ----> db functions in Django.com
 
 INSTALLED_APPS = [
     'django.contrib.admin',
