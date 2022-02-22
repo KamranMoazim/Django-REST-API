@@ -12,5 +12,12 @@
     {% else %}
     <h1>This is Hello World! </h1>
     {% endif %}
+
+    <ul>
+        {% for product in products %}
+        <li> {{product.title}} </li>
+        {% comment %} - {{product.collection.stitle}}  {% endcomment %}
+        {% endfor %}
+    </ul>
 </body>
 </html>
