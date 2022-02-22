@@ -12,7 +12,7 @@ class Promotion(models.Model):
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
-    featured_image = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
+    featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
     # we used ---> related_name="+"  because as by-default django is going to create reverse relation named --> collection
     # so we override it and said django to not create Reverse relation   
 
@@ -21,8 +21,9 @@ class Product(models.Model):
     # sku = models.CharField(max_length=10, primary_key=True)    
     #### we dont need above thing, it will be automatically created by Django
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     # a collection can have multiple Products
@@ -58,6 +59,7 @@ class Customer(models.Model):
 class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    zip = models.CharField(max_length=25)
     customer = models.ForeignKey(Customer, related_name="customer", on_delete=models.CASCADE)
 
 

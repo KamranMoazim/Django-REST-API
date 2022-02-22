@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 # http://localhost:8000/playground/hello/
+# https://mockaroo.com/ IMPORTANT for mock DATA
 
 INSTALLED_APPS = [
     'django.contrib.admin',
