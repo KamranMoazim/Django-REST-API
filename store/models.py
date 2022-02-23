@@ -1,4 +1,4 @@
-from statistics import mode
+from django.core.validators import MinValueValidator
 from django.db import models
 
 # Create your models here.
@@ -16,20 +16,32 @@ class Collection(models.Model):
     # we used ---> related_name="+"  because as by-default django is going to create reverse relation named --> collection
     # so we override it and said django to not create Reverse relation   
 
+    def __str__(self) -> str:
+        return self.title
+    
+    class Meta:
+        ordering = ["title"]
+
 
 class Product(models.Model):
     # sku = models.CharField(max_length=10, primary_key=True)    
     #### we dont need above thing, it will be automatically created by Django
     title = models.CharField(max_length=255)
     slug = models.SlugField()
-    description = models.TextField()
-    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
-    inventory = models.IntegerField()
+    description = models.TextField(null=True, blank=True)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
+    inventory = models.IntegerField(validators=[MinValueValidator(1)])
     last_update = models.DateTimeField(auto_now=True)
     # a collection can have multiple Products
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     # many products can have many promotions
-    promotions = models.ManyToManyField(Promotion, related_name='products')
+    promotions = models.ManyToManyField(Promotion, related_name='products', blank=True)
+
+    def __str__(self) -> str:
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
 
 
 class Customer(models.Model):
@@ -48,6 +60,13 @@ class Customer(models.Model):
     phone = models.CharField(max_length=22)
     birth_date = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+    class Meta:
+        ordering = ["first_name", "last_name"]
+
 
 
 # a customer can have only ONE address means one-to-one relationship

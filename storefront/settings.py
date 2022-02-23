@@ -34,12 +34,14 @@ ALLOWED_HOSTS = []
 # https://mockaroo.com/ IMPORTANT for mock DATA
 # queryset ----> field lookups in Django.com
 # functions ----> db functions in Django.com
+# admin changing ----> ModelAdmin in Django.com
+# django validators ----> validators in Django.com
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    # 'django.contrib.sessions',
+    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'playground', # or you can write ==> playground.apps.PlaygroundConfig
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'store',
     'tags',
     'likes',
+    'store_custom',
 ]
 
 MIDDLEWARE = [
