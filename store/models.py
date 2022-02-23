@@ -33,7 +33,7 @@ class Product(models.Model):
     inventory = models.IntegerField(validators=[MinValueValidator(1)])
     last_update = models.DateTimeField(auto_now=True)
     # a collection can have multiple Products
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT, related_name="products")
     # many products can have many promotions
     promotions = models.ManyToManyField(Promotion, related_name='products', blank=True)
 
@@ -102,7 +102,7 @@ class OrderItem(models.Model):
     # a order can have multiple OrderItems
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     # a product can blong multiple OrderItems
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="orderitems")
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 

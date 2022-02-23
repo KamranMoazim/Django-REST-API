@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'playground', # or you can write ==> playground.apps.PlaygroundConfig
     'debug_toolbar',  # this is debug toolbar
+    'rest_framework',  # this is django rest framework
     'store',
     'tags',
     'likes',
@@ -150,3 +151,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False
+}
