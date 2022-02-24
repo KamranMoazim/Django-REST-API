@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'playground', # or you can write ==> playground.apps.PlaygroundConfig
     'debug_toolbar',  # this is debug toolbar
     'rest_framework',  # this is django rest framework
+    'djoser',  # this is djoser
     'django_filters',  # this is django filter
     'store',
     'tags',
@@ -159,6 +161,36 @@ REST_FRAMEWORK = {
     # we define properties here for applying it to all REST_apis like products, collections or others
     # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',  # PageNumberPagination
     # 'PAGE_SIZE':10
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES':[   # for appyling permissions(required authentication globally)
+    #     'rest_framework.permissions.AllowAny',
+    #     # 'rest_framework.permissions.IsAuthenticated'
+    # ]
+}
+
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 AUTH_USER_MODEL = 'core.User'
+
+
+DJOSER = {
+    'SERIALIZERS':{
+        'user_create': 'core.serializers.UserCreateSerializer',
+        'current_user': 'core.serializers.UserSerializer',
+    }
+}
+
+
+# for create --> http://127.0.0.1:8000/auth/users
+
+# for login --> http://127.0.0.1:8000/auth/jwt/create
+# {
+#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NTc5NDY3OSwianRpIjoiY2Q1NDE1NDk0Y2VlNDQ1ZmIyMmFkYmYzNjY5NmYzZGEiLCJ1c2VyX2lkIjoyfQ.AKJ7GFfnw9wp_XtpSV2-QHLsOmPtnIQCdMGpOqJDMYw",
+#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1Nzk0Njc5LCJqdGkiOiJiOTkwMDYzMmU5ZTU0MzUzODIxYmZhM2M1OWU1MGM5OCIsInVzZXJfaWQiOjJ9.6R3MoZezalUoujOeiA43xKqTiuGXdpICuPY8zd6LiVM"
+# }

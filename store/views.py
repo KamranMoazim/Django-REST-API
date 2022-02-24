@@ -1,4 +1,4 @@
-from math import prod
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -7,24 +7,66 @@ from django.db.models.aggregates import Count
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
-
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
+
+from .permissions import IsAdminOrReadOnly, MyFullDjangoModelPermissions, ViewCustomerHistoryPermission
 from .pagination import MyDefaultPaginationClass
 
 # Create your views here.
 
-from .models import CartItem, Collection, OrderItem, Product, Review, Cart
+from .models import CartItem, Collection, OrderItem, Product, Review, Cart, Customer
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer,\
-     CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer
+      CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, \
+      CustomerSerializer
 from .filters import ProductFilter
 
 
+
+
+
+# class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class CustomerViewSet(ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAdminUser]
+    # permission_classes = [MyFullDjangoModelPermissions]
+
+    # def get_permissions(self):  # for over-riding permission for particular method like GET, POST, DELETE 
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAuthenticated()]
+
+    # detail=True ---> means route will be like this http://127.0.0.1:8000/store/customers/1/history/
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response("ok")
+
+    # detail=False ---> means route will be like this http://127.0.0.1:8000/store/customers/me
+    @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])   # if you wants to over-ride permission for particular action
+    def me(self, request):
+        if request.user.id is None:
+            return Response("Please Login!")
+        (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
+        if request.method == "GET":
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        elif request.method == "PUT":
+            serializer = CustomerSerializer(customer, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+
+
+
+# &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 
 class CartItemViewSet(ModelViewSet):
@@ -82,6 +124,9 @@ class ProductViewSet(ModelViewSet):
     pagination_class = MyDefaultPaginationClass
     search_fields = ["title", "description"]
     ordering_fields = ["unit_price", "last_update"]
+
+    def get_permissions(self):
+        return [IsAdminOrReadOnly()]
 
 # we donot need following custom filter as we are using library now 
     # def get_queryset(self):
@@ -169,6 +214,7 @@ class ProductViewSet(ModelViewSet):
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('products')).all()
     serializer_class = CollectionSerializer
+    permission_classes = [IsAdminOrReadOnly]
     
     def get_serializer_context(self):
         return {'request': self.request}
