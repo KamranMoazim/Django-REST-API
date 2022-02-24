@@ -1,3 +1,6 @@
 django = "*"
 django-debug-toolbar = "*"
 mysqlclient = "*"
+djangorestframework = "*"
+drf-nested-routers = "*"
+django-filter = "*"
