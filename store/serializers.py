@@ -1,12 +1,21 @@
 
 from decimal import Decimal
+from venv import create
 from rest_framework import serializers
 
-from store.models import Collection, Product
+from store.models import Collection, Product, Review
 
 
 # serializers are actually for outer world
 # means what you wants to show to outer world
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["id", "name", "description", "date"]  #  "product", 
+
+    def create(self, validated_data):
+        return Review.objects.create(product_id=self.context["product_id"], **validated_data)
 
 
 class CollectionSerializer(serializers.ModelSerializer):

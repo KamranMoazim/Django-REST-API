@@ -36,6 +36,8 @@ ALLOWED_HOSTS = []
 # functions ----> db functions in Django.com
 # admin changing ----> ModelAdmin in Django.com
 # django validators ----> validators in Django.com
+# drf-nested-routers ----> nested routes in github
+# django-filter ----> genereic filters
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'playground', # or you can write ==> playground.apps.PlaygroundConfig
     'debug_toolbar',  # this is debug toolbar
     'rest_framework',  # this is django rest framework
+    'django_filters',  # this is django filter
     'store',
     'tags',
     'likes',
@@ -152,5 +155,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'COERCE_DECIMAL_TO_STRING': False
+    'COERCE_DECIMAL_TO_STRING': False,
+    # we define properties here for applying it to all REST_apis like products, collections or others
+    # 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',  # PageNumberPagination
+    # 'PAGE_SIZE':10
 }
