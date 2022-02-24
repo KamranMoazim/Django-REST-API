@@ -10,15 +10,20 @@ from . import views
 router = routers.DefaultRouter()   # routers.SimpleRouter()
 router.register("products", views.ProductViewSet, basename="products")
 router.register("collections", views.CollectionViewSet)
+router.register("carts", views.CartViewSet, basename="carts")
 
-nestRouter = routers.NestedDefaultRouter(router, "products", lookup="product")  # means product_pk to get product id
-nestRouter.register("reviews", views.ReviewViewSet, basename="product-reviews")
+products_router = routers.NestedDefaultRouter(router, "products", lookup="product")  # means product_pk to get product id
+products_router.register("reviews", views.ReviewViewSet, basename="product-reviews")
+
+carts_router = routers.NestedDefaultRouter(router, "carts", lookup="cart")       # means cart_pk to get cart id
+carts_router.register("items", views.CartItemViewSet, basename="cart-items")
 
 # print(router.urls)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("", include(nestRouter.urls))
+    path("", include(products_router.urls)),
+    path("", include(carts_router.urls))
 ]
 
 # urlpatterns = [
