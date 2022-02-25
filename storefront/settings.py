@@ -208,3 +208,18 @@ DJOSER = {
 # }
 
 
+
+
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_HOST_UESR = "localhost"
+EMAIL_HOST_PASSWORD = "localhost"
+EMAIL_PORT = 2525
+DEFAULT_FROM_EMAIL = 'kamrannaseer76543@gmail.com'
+
+ADMINS = [
+    ("Name", 'name@gmail.com'),
+    ("Kamran", 'kamrannaseer765@gmail.com')
+]

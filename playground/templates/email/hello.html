@@ -1,0 +1,8 @@
+{% block subject %}
+    This is a long subject
+{% endblock  %}
+
+{% block html_body_forMail %}
+    A mail from --->  <h1>{{name}}</h1>
+    {% comment %} {{html_body}} {% endcomment %}
+{% endblock  %}
