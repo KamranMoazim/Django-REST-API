@@ -1,4 +1,4 @@
-import collections
+
 from django.forms import DecimalField
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -14,6 +14,7 @@ from templated_mail.mail import BaseEmailMessage
 
 from store.models import Collection, Product, OrderItem, Order, Customer
 from tags.models import TaggedItem
+from .task import notify_customers
 
 # Create your views here.
 # request -> response 
@@ -208,24 +209,31 @@ def hello_world(request):
 # lesson 26 ---> RAW SQL Queries
     # query_set = Collection.objects.raw("SELECT * from store_collection")
 
+
+
+# EMAIL SENDING LESSON START
     # return render(request, "index.html", {"name":"Kamran Moazim", "products":list(query_set)})
     # return render(request, "index.html", {"name":"Kamran Moazim", "products":products_not_query_set})
 
-    try:
-        # way 1
-        send_mail('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
-        # mail_admins('subject', 'message', html_message="same message again")
+    # try:
+    #     # way 1
+    #     send_mail('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
+    #     # mail_admins('subject', 'message', html_message="same message again")
 
-        # way 2
-        # message = EmailMessage('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
-        # message.attach_file("playground/static/images/bootstrap.png")
-        # message.send()
+    #     # way 2
+    #     # message = EmailMessage('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
+    #     # message.attach_file("playground/static/images/bootstrap.png")
+    #     # message.send()
 
-        # way 3
-        # message = BaseEmailMessage(template_name="email/hello.html", context={"name":"Kamran"})
-        # message.send(["to@gmail.com"])
-    except BadHeaderError:
-        pass
+    #     # way 3
+    #     # message = BaseEmailMessage(template_name="email/hello.html", context={"name":"Kamran"})
+    #     # message.send(["to@gmail.com"])
+    # except BadHeaderError:
+    #     pass
+
+# BACKGROUND RUNNING TASKS LESSON
+    notify_customers.delay("This is message")
+
     return render(request, "index.html")
 
 
