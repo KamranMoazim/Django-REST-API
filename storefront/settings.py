@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',  # this is django rest framework
     'djoser',  # this is djoser
     'django_filters',  # this is django filter
+    'corsheaders',  # this is django-cors-headers
     'store',
     'tags',
     'likes',
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',    # this is cors middleware
     "debug_toolbar.middleware.DebugToolbarMiddleware",  # this is toolbar middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -73,6 +76,11 @@ INTERNAL_IPS = [
     # ...
     "127.0.0.1",
     # ...
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8001',
+    'http://127.0.0.1:8001'
 ]
 
 ROOT_URLCONF = 'storefront.urls'
@@ -150,6 +158,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -194,3 +206,5 @@ DJOSER = {
 #     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY0NTc5NDY3OSwianRpIjoiY2Q1NDE1NDk0Y2VlNDQ1ZmIyMmFkYmYzNjY5NmYzZGEiLCJ1c2VyX2lkIjoyfQ.AKJ7GFfnw9wp_XtpSV2-QHLsOmPtnIQCdMGpOqJDMYw",
 #     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjQ1Nzk0Njc5LCJqdGkiOiJiOTkwMDYzMmU5ZTU0MzUzODIxYmZhM2M1OWU1MGM5OCIsInVzZXJfaWQiOjJ9.6R3MoZezalUoujOeiA43xKqTiuGXdpICuPY8zd6LiVM"
 # }
+
+

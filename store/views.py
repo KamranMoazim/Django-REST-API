@@ -22,12 +22,25 @@ from .pagination import MyDefaultPaginationClass
 
 # Create your views here.
 
-from .models import CartItem, Collection, Order, OrderItem, Product, Review, Cart, Customer
+from .models import CartItem, Collection, Order, OrderItem, Product, Review, Cart, Customer, ProductImage
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer,\
       CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, \
-      CustomerSerializer, OrderSerializer, CreateOrderSerializer, UpdateOrderSerializer
+      CustomerSerializer, OrderSerializer, CreateOrderSerializer, UpdateOrderSerializer, \
+      ProductImageSerializer
 from .filters import ProductFilter
 
+
+
+
+
+class ProductImageViewSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs["product_pk"])
+
+    def get_serializer_context(self):
+        return {"product_id":self.kwargs["product_pk"]}
 
 
 
@@ -163,7 +176,7 @@ class ReviewViewSet(ModelViewSet):
 
 # *********** IMPLEMENTATION *********** USING APIView
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     # filterset_fields = ["collection_id", "unit_price"]

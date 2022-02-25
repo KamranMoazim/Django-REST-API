@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.contenttypes.admin import GenericStackedInline, GenericTabularInline
 
 # Register your models here.
-from store.admin import ProductAdmin
+from store.admin import ProductAdmin, ProductImageInline
 from store.models import Product
 from tags.models import TaggedItem
 from core.models import User
@@ -26,8 +26,9 @@ class TagInline(GenericTabularInline):   # GenericStackedInline
     max_num = 10
     autocomplete_fields = ["tag"]
 
+
 class CustomProductAdmin(ProductAdmin):
-    inlines = [TagInline]
+    inlines = [TagInline, ProductImageInline]
 
 admin.site.unregister(Product)
 admin.site.register(Product, CustomProductAdmin)

@@ -16,6 +16,7 @@ router.register("orders", views.OrderViewSet, basename="orders")
 
 products_router = routers.NestedDefaultRouter(router, "products", lookup="product")  # means product_pk to get product id
 products_router.register("reviews", views.ReviewViewSet, basename="product-reviews")
+products_router.register("images", views.ProductImageViewSet, basename="product-images")
 
 carts_router = routers.NestedDefaultRouter(router, "carts", lookup="cart")       # means cart_pk to get cart id
 carts_router.register("items", views.CartItemViewSet, basename="cart-items")
