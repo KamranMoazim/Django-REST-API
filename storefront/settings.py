@@ -209,7 +209,7 @@ DJOSER = {
 
 
 
-
+# for smtp -----> docker run --rm -it -p 3000:80 -p 2525:25 rnwood/smtp4dev
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -223,3 +223,19 @@ ADMINS = [
     ("Name", 'name@gmail.com'),
     ("Kamran", 'kamrannaseer765@gmail.com')
 ]
+
+# for redis running -----> docker run -p 6379:6379 redis
+# for running celery(worker) -----> celery -A storefront worker --loglevel=info
+CELERY_BROKER_URL = "redis://localhost:6379/1"
+# for running celery(schedule) -----> celery -A storefront beat
+CELERY_BEAT_SCHEDULE = {
+    "notify_customers":{
+        'task':"playground.task.notify_customers",
+        'schedule':5,  # means after every 5 seconds   # go and view docmentation for detail
+        'args':["This is Hello World!"]
+    }
+}
+
+
+# for running it via flower ----> celery -A storefront flower 
+# and then go to localhost:5555
