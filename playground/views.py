@@ -8,7 +8,9 @@ from django.db.models.aggregates import Aggregate, Count, Max, Min, Avg
 from django.db.models.functions import Concat
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
+from django.core.mail import send_mail, mail_admins, BadHeaderError, EmailMessage
 
+from templated_mail.mail import BaseEmailMessage
 
 from store.models import Collection, Product, OrderItem, Order, Customer
 from tags.models import TaggedItem
@@ -19,7 +21,7 @@ from tags.models import TaggedItem
 
 def hello_world(request):
 
-    query_set = Product.objects.all()
+    # query_set = Product.objects.all()
 
 # lesson 4 ----> Query_Sets
     # few methods return Query_Set and few returns exact result so it depends on the method which you are calling
@@ -191,23 +193,40 @@ def hello_world(request):
     # Collection.objects.filter(id__lt=5).delete()
 
 # lesson 25 ---> Transactions
-    with transaction.atomic():
-        order = Order()
-        order.customer_id=3
-        order.save()
+    # with transaction.atomic():
+    #     order = Order()
+    #     order.customer_id=3
+    #     order.save()
 
-        item = OrderItem()
-        item.order = order
-        item.product_id = 5
-        item.quantity = 2
-        item.unit_price = 23.5
-        item.save()
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = 5
+    #     item.quantity = 2
+    #     item.unit_price = 23.5
+    #     item.save()
     
 # lesson 26 ---> RAW SQL Queries
     # query_set = Collection.objects.raw("SELECT * from store_collection")
 
-    return render(request, "index.html", {"name":"Kamran Moazim", "products":list(query_set)})
+    # return render(request, "index.html", {"name":"Kamran Moazim", "products":list(query_set)})
     # return render(request, "index.html", {"name":"Kamran Moazim", "products":products_not_query_set})
+
+    try:
+        # way 1
+        send_mail('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
+        # mail_admins('subject', 'message', html_message="same message again")
+
+        # way 2
+        # message = EmailMessage('subject', 'message', 'kamrannaseer76543@gmail.com', ["to@gmail.com"])
+        # message.attach_file("playground/static/images/bootstrap.png")
+        # message.send()
+
+        # way 3
+        # message = BaseEmailMessage(template_name="email/hello.html", context={"name":"Kamran"})
+        # message.send(["to@gmail.com"])
+    except BadHeaderError:
+        pass
+    return render(request, "index.html")
 
 
 
