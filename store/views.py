@@ -22,11 +22,57 @@ from .pagination import MyDefaultPaginationClass
 
 # Create your views here.
 
-from .models import CartItem, Collection, OrderItem, Product, Review, Cart, Customer
+from .models import CartItem, Collection, Order, OrderItem, Product, Review, Cart, Customer
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer,\
       CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, \
-      CustomerSerializer
+      CustomerSerializer, OrderSerializer, CreateOrderSerializer, UpdateOrderSerializer
 from .filters import ProductFilter
+
+
+
+
+
+
+class OrderViewSet(ModelViewSet):
+    # queryset = Order.objects.all()
+    # serializer_class = OrderSerializer
+
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_permissions(self):
+        if self.request.method in ['PATCH', 'DELETE']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data, context={'user_id':self.request.user.id})
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateOrderSerializer
+        return OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.id is None:
+            return Response("Please Login!")
+        if self.request.user.is_staff:
+            return Order.objects.all()
+        # (customer_id, created) = Customer.objects.only("id").get_or_create(user_id=self.request.user.id)
+        # as we are using signals so we can use these changings
+        customer_id = Customer.objects.only("id").get(user_id=self.request.user.id)
+        if self.request.method == "GET":
+            return Order.objects.filter(customer_id=customer_id) 
+
+
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 
@@ -54,7 +100,9 @@ class CustomerViewSet(ModelViewSet):
     def me(self, request):
         if request.user.id is None:
             return Response("Please Login!")
-        (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
+        # (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
+        # as we are using signals so we can use these changings
+        customer = Customer.objects.get(user_id=request.user.id)
         if request.method == "GET":
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)

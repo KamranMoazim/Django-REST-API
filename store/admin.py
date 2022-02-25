@@ -10,6 +10,9 @@ from django.db.models.query import QuerySet
 from . import models
 
 
+admin.site.register(models.Cart)
+
+
 class OrderItemInline(admin.StackedInline):   # admin.TabularInline
     model = models.OrderItem
     extra = 0

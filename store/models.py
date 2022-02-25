@@ -124,7 +124,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     # a order can have multiple OrderItems
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="items")
     # a product can blong multiple OrderItems
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="orderitems")
     quantity = models.PositiveSmallIntegerField()
